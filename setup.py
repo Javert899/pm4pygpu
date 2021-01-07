@@ -10,7 +10,7 @@ def read_file(filename):
 
 
 setup(
-    name="ocel-standard",
+    name="pm4pygpu",
     version=pm4pygpu.__version__,
     description=pm4pygpu.__doc__.strip(),
     long_description=read_file('README.md'),
@@ -18,7 +18,7 @@ setup(
     author_email=pm4pygpu.__author_email__,
     py_modules=[pm4pygpu.__name__],
     include_package_data=True,
-    packages=['ocel', 'ocel.exporter', 'ocel.importer', 'ocel.validation'],
+    packages=["pm4pygpu"],
     url='http://www.pm4py.org',
     license='GPL-3.0',
     install_requires=[
