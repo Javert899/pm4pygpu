@@ -16,7 +16,14 @@ def post_filtering(df):
 	df[Constants.TIMESTAMP_DIFF] = df[Constants.TARGET_TIMESTAMP] - df[Constants.TARGET_PRE_TIMESTAMP]
 	return df
 
-def apply(df, case_id="caseAAAconceptAAAname", activity_key="conceptAAAname", timestamp_key="timeAAAtimestamp", sort_required=True):
+def prefix_columns(df):
+	columns = list(df.columns)
+	columns = [x.replace("AAA", ":") for x in columns]
+	df.columns = columns
+	return df
+
+def apply(df, case_id="case:concept:name", activity_key="concept:name", timestamp_key="time:timestamp", sort_required=True):
+	df = prefix_columns(df)
 	df[Constants.TARGET_CASE_IDX] = df[case_id].astype("category").cat.codes
 	df[Constants.TARGET_ACTIVITY] = df[activity_key].astype("category")
 	df[Constants.TARGET_ACTIVITY_CODE] = df[Constants.TARGET_ACTIVITY].cat.codes

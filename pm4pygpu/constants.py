@@ -12,3 +12,6 @@ class Constants:
 	TARGET_PRE_CASE = "custom_column_pre_case"
 	TARGET_VARIANT_NUMBER = "custom_column_variant_number"
 	TIMESTAMP_DIFF = "custom_column_timestamp_diff"
+
+	VARIANTS_SEP = ","
+	CUSTOM_PREFIX = "custom_column"

@@ -13,7 +13,17 @@ def get_last_df(df):
 	return last_df
 
 def build_cases_df(df):
-	cases_df = df.groupby(Constants.TARGET_CASE_IDX).agg({Constants.TARGET_TIMESTAMP: "min", Constants.TARGET_TIMESTAMP + "_2": "max"})
+	cases_df = df.groupby(Constants.TARGET_CASE_IDX).agg({Constants.TARGET_TIMESTAMP: "min", Constants.TARGET_TIMESTAMP + "_2": "max", Constants.TARGET_EV_IDX: "count"}).reset_index()
 	cases_df[Constants.CASE_DURATION] = cases_df[Constants.TARGET_TIMESTAMP + "_2"] - cases_df[Constants.TARGET_TIMESTAMP]
 	cases_df = cases_df.sort_values(Constants.TARGET_TIMESTAMP)
 	return cases_df
+
+def filter_on_case_size(df, min_size=1, max_size=1000000000):
+	cdf = build_cases_df(df)
+	cdf = cdf.query(Constants.TARGET_EV_IDX + " >= "+str(min_size)+" and "+Constants.TARGET_EV_IDX + " <= "+str(max_size))[Constants.TARGET_CASE_IDX]
+	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]
+
+def filter_on_case_perf(df, min_perf=0, max_perf=1000000000):
+	cdf = build_cases_df(df)
+	cdf = cdf.query(Constants.CASE_DURATION + " >= "+str(min_perf)+" and "+Constants.CASE_DURATION + " <= "+str(max_perf))[Constants.TARGET_CASE_IDX]
+	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]

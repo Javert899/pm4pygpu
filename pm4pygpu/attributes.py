@@ -1,5 +1,10 @@
 from pm4pygpu.constants import Constants
 
+def get_attributes_list(df):
+	attributes = list(df.columns)
+	attributes = [x for x in attributes if not x.startswith(Constants.CUSTOM_PREFIX)]
+	return attributes
+
 def get_attribute_values(df, attribute=Constants.TARGET_ACTIVITY):
 	att_dict = df[attribute].value_counts().to_pandas().to_dict()
 	for att in att_dict:
