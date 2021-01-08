@@ -4,7 +4,7 @@ import numpy as np
 
 def post_grouping_function(custom_column_activity_code, custom_column_timestamp, custom_column_case_idx, custom_column_pre_activity_code, custom_column_pre_timestamp, custom_column_pre_case, custom_column_variant_number):
 	for i in range(cuda.threadIdx.x, len(custom_column_activity_code), cuda.blockDim.x):
-		custom_column_variant_number[i] = (i + 1) * (custom_column_activity_code[i] + 1)
+		custom_column_variant_number[i] = (len(custom_column_activity_code) + i + 1) * (custom_column_activity_code[i] + 1)
 		if i > 0:
 			custom_column_pre_activity_code[i] = custom_column_activity_code[i-1]
 			custom_column_pre_timestamp[i] = custom_column_timestamp[i-1]

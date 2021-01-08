@@ -15,3 +15,5 @@ class Constants:
 
 	VARIANTS_SEP = ","
 	CUSTOM_PREFIX = "custom_column"
+	TEMP_COLUMN_1 = "custom_column_temp_1"
+	TEMP_COLUMN_2 = "custom_column_temp_2"

@@ -12,10 +12,19 @@ def get_last_df(df):
 	last_df = df[df[Constants.TARGET_EV_CASE_MULT_ID].isin(idxs)]
 	return last_df
 
-def build_cases_df(df):
-	cases_df = df.groupby(Constants.TARGET_CASE_IDX).agg({Constants.TARGET_TIMESTAMP: "min", Constants.TARGET_TIMESTAMP + "_2": "max", Constants.TARGET_EV_IDX: "count"}).reset_index()
-	cases_df[Constants.CASE_DURATION] = cases_df[Constants.TARGET_TIMESTAMP + "_2"] - cases_df[Constants.TARGET_TIMESTAMP]
-	cases_df = cases_df.sort_values(Constants.TARGET_TIMESTAMP)
+def build_cases_df(df, att=None):
+	if att is None:
+		col1 = Constants.TARGET_TIMESTAMP
+		col2 = Constants.TARGET_TIMESTAMP + "_2"
+	else:
+		col1 = Constants.TEMP_COLUMN_1
+		col2 = Constants.TEMP_COLUMN_2
+		df = df.copy()
+		df[col1] = df[att].astype(int) // 10**6
+		df[col2] = df[Constants.TEMP_COLUMN_1]
+	cases_df = df.groupby(Constants.TARGET_CASE_IDX).agg({col1: "min", col2: "max", Constants.TARGET_EV_IDX: "count"}).reset_index()
+	cases_df[Constants.CASE_DURATION] = cases_df[col2] - cases_df[col1]
+	cases_df = cases_df.sort_values(col1)
 	return cases_df
 
 def filter_on_case_size(df, min_size=1, max_size=1000000000):
