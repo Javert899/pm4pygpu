@@ -37,3 +37,17 @@ def filter_cases_intersecting(df, min_timest=0, max_timest=100000000000, att=Non
 	query = " or ".join(query_parts)
 	cdf = cdf.query(query)[Constants.TARGET_CASE_IDX]
 	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]
+
+def timestamp_attribute_values(df, attribute=None, n_values=5000):
+	if attribute is not None:
+		df = df.copy()
+		df[Constants.TEMP_COLUMN_1] = df[attribute].astype("int") // 10**6
+		attribute = Constants.TEMP_COLUMN_1
+	else:
+		attribute = Constants.TARGET_TIMESTAMP
+	serie = df[attribute].dropna().sort_values()
+	lenn = len(serie)
+	if n_values < lenn:
+		serie = serie.sample(n_values)
+	return serie.to_arrow().to_pylist()
+

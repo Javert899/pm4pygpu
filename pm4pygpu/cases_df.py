@@ -36,3 +36,26 @@ def filter_on_case_perf(df, min_perf=0, max_perf=1000000000):
 	cdf = build_cases_df(df)
 	cdf = cdf.query(Constants.CASE_DURATION + " >= "+str(min_perf)+" and "+Constants.CASE_DURATION + " <= "+str(max_perf))[Constants.TARGET_CASE_IDX]
 	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]
+
+def get_case_durations(df, n_values=5000):
+	cdf = build_cases_df(df)
+	serie = cdf[Constants.CASE_DURATION].sort_values()
+	lenn = len(serie)
+	if n_values < lenn:
+		serie = serie.sample(n_values)
+	return serie.to_arrow().to_pylist()
+
+def get_intervals(df, n_values=5000):
+	cdf = build_cases_df(df)
+	lenn = len(cdf)
+	if n_values < lenn:
+		cdf = cdf.sample(n_values)
+	inte = cdf.to_arrow().to_pydict()
+	ret = []
+	for i in range(len(inte[Constants.TARGET_TIMESTAMP])):
+		ret.append((inte[Constants.TARGET_TIMESTAMP][i], inte[Constants.TARGET_TIMESTAMP+"_2"][i]))
+	return ret
+
+def get_case_size(df):
+	return build_cases_df(df).groupby(Constants.TARGET_EV_IDX).count().to_pandas().to_dict()[Constants.TARGET_CASE_IDX]
+
