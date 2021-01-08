@@ -1,4 +1,5 @@
 from pm4pygpu.constants import Constants
+import json
 
 def get_first_df(df):
 	group_df_min = df.groupby(Constants.TARGET_CASE_IDX).agg({Constants.TARGET_EV_CASE_MULT_ID: "min"})
@@ -62,4 +63,17 @@ def get_intervals(df, n_values=5000):
 def get_case_size(df):
 	ret = build_cases_df(df).groupby(Constants.TARGET_EV_IDX).count().to_pandas().to_dict()[Constants.TARGET_CASE_IDX]
 	ret = {int(x): int(y) for x, y in ret.items()}
+	return ret
+
+def get_cases_description(df, start_idx=0, end_idx=200):
+	cdf = build_cases_df(df).query(str(start_idx) + " <= "+Constants.TARGET_CASE_IDX+" < " + str(end_idx))
+	desc = cdf.to_arrow().to_pydict()
+	ret = []
+	for i in range(len(desc[Constants.TARGET_TIMESTAMP])):
+		el = {}
+		el["caseDuration"] = float(desc[Constants.CASE_DURATION][i])
+		el["startTime"] = float(desc[Constants.TARGET_TIMESTAMP][i])
+		el["endTime"] = float(desc[Constants.TARGET_TIMESTAMP + "_2"][i])
+		el["caseId"] = str(desc[Constants.TARGET_CASE_IDX][i])
+		ret.append(el)
 	return ret
