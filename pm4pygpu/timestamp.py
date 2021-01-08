@@ -49,5 +49,8 @@ def timestamp_attribute_values(df, attribute=None, n_values=5000):
 	lenn = len(serie)
 	if n_values < lenn:
 		serie = serie.sample(n_values)
-	return serie.to_arrow().to_pylist()
+	ret = serie.to_arrow().to_pylist()
+	for i in range(len(ret)):
+		ret[i] = float(ret[i])
+	return ret
 

@@ -43,7 +43,10 @@ def get_case_durations(df, n_values=5000):
 	lenn = len(serie)
 	if n_values < lenn:
 		serie = serie.sample(n_values)
-	return serie.to_arrow().to_pylist()
+	ret = serie.to_arrow().to_pylist()
+	for i in range(len(ret)):
+		ret[i] = float(ret[i])
+	return ret
 
 def get_intervals(df, n_values=5000):
 	cdf = build_cases_df(df)
@@ -53,9 +56,10 @@ def get_intervals(df, n_values=5000):
 	inte = cdf.to_arrow().to_pydict()
 	ret = []
 	for i in range(len(inte[Constants.TARGET_TIMESTAMP])):
-		ret.append((inte[Constants.TARGET_TIMESTAMP][i], inte[Constants.TARGET_TIMESTAMP+"_2"][i]))
+		ret.append((float(inte[Constants.TARGET_TIMESTAMP][i]), float(inte[Constants.TARGET_TIMESTAMP+"_2"][i])))
 	return ret
 
 def get_case_size(df):
-	return build_cases_df(df).groupby(Constants.TARGET_EV_IDX).count().to_pandas().to_dict()[Constants.TARGET_CASE_IDX]
-
+	ret = build_cases_df(df).groupby(Constants.TARGET_EV_IDX).count().to_pandas().to_dict()[Constants.TARGET_CASE_IDX]
+	ret = {int(x): int(y) for x, y in ret.items()}
+	return ret
