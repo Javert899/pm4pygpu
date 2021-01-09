@@ -65,11 +65,12 @@ def get_case_size(df):
 	ret = {int(x): int(y) for x, y in ret.items()}
 	return ret
 
-def get_cases_description(df, start_idx=0, end_idx=200):
-	cdf = build_cases_df(df).query(str(start_idx) + " <= "+Constants.TARGET_CASE_IDX+" < " + str(end_idx))
+def get_cases_description(df, start_idx=0, end_idx=200, sort_column=Constants.TARGET_TIMESTAMP, ascending=True):
+	cdf = build_cases_df(df)
+	cdf = cdf.sort_values(sort_column, ascending=ascending)
 	desc = cdf.to_arrow().to_pydict()
 	ret = []
-	for i in range(len(desc[Constants.TARGET_TIMESTAMP])):
+	for i in range(start_idx, min(end_idx, len(desc[Constants.TARGET_TIMESTAMP]))):
 		el = {}
 		el["caseDuration"] = float(desc[Constants.CASE_DURATION][i])
 		el["startTime"] = float(desc[Constants.TARGET_TIMESTAMP][i])
