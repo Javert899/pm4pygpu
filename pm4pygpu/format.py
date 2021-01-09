@@ -25,17 +25,17 @@ def prefix_columns(df):
 	return df
 
 
-def apply(df, case_id="case:concept:name", activity_key="concept:name", timestamp_key="time:timestamp", sort_required=True):
+def apply(df, case_id="case:concept:name", activity_key="concept:name", timestamp_key="time:timestamp"):
 	df = prefix_columns(df)
-	df[Constants.TARGET_CASE_IDX] = df[case_id].astype("category").cat.codes
 	df[Constants.TARGET_ACTIVITY] = df[activity_key].astype("category")
 	df[Constants.TARGET_ACTIVITY_CODE] = df[Constants.TARGET_ACTIVITY].cat.codes
 	df[Constants.TARGET_TIMESTAMP] = df[timestamp_key].astype("int") // 10**6
 	df[Constants.TARGET_TIMESTAMP + "_2"] = df[Constants.TARGET_TIMESTAMP]
 	df[Constants.TARGET_EV_IDX] = df.index.astype("int")
-	if sort_required:
-		df = df.sort_values([Constants.TARGET_CASE_IDX, Constants.TARGET_TIMESTAMP, Constants.TARGET_EV_IDX]).reset_index()
-		df[Constants.TARGET_EV_IDX] = df.index.astype("int")
+	df = df.sort_values([Constants.TARGET_TIMESTAMP, Constants.TARGET_EV_IDX]).reset_index()
+	df[Constants.TARGET_CASE_IDX] = df[case_id].astype("category").cat.codes
+	#df = df.sort_values([Constants.TARGET_CASE_IDX, Constants.TARGET_TIMESTAMP, Constants.TARGET_EV_IDX]).reset_index()
+	df[Constants.TARGET_EV_IDX] = df.index.astype("int")
 	df[Constants.TARGET_EV_IDX] = df[Constants.TARGET_EV_IDX] + 1
 	mult_fact = df[Constants.TARGET_EV_IDX].max() + 2
 	df[Constants.TARGET_EV_CASE_MULT_ID] = df[Constants.TARGET_CASE_IDX].astype(np.int32) + 1
