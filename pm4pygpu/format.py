@@ -9,6 +9,8 @@ def post_grouping_function(custom_column_activity_code, custom_column_timestamp,
 			custom_column_pre_activity_code[i] = custom_column_activity_code[i-1]
 			custom_column_pre_timestamp[i] = custom_column_timestamp[i-1]
 			custom_column_pre_case[i] = custom_column_case_idx[i-1]
+		else:
+			custom_column_pre_case[i] = -1
 
 def post_filtering(df):
 	cdf = df.groupby(Constants.TARGET_CASE_IDX)
@@ -22,6 +24,7 @@ def prefix_columns(df):
 	df.columns = columns
 	return df
 
+
 def apply(df, case_id="case:concept:name", activity_key="concept:name", timestamp_key="time:timestamp", sort_required=True):
 	df = prefix_columns(df)
 	df[Constants.TARGET_CASE_IDX] = df[case_id].astype("category").cat.codes
@@ -33,6 +36,9 @@ def apply(df, case_id="case:concept:name", activity_key="concept:name", timestam
 	if sort_required:
 		df = df.sort_values([Constants.TARGET_CASE_IDX, Constants.TARGET_TIMESTAMP, Constants.TARGET_EV_IDX]).reset_index()
 		df[Constants.TARGET_EV_IDX] = df.index.astype("int")
+	df[Constants.TARGET_EV_IDX] = df[Constants.TARGET_EV_IDX] + 1
 	mult_fact = df[Constants.TARGET_EV_IDX].max() + 2
-	df[Constants.TARGET_EV_CASE_MULT_ID] = mult_fact * df[Constants.TARGET_CASE_IDX] + df[Constants.TARGET_EV_IDX]
+	df[Constants.TARGET_EV_CASE_MULT_ID] = df[Constants.TARGET_CASE_IDX].astype(np.int32) + 1
+	df[Constants.TARGET_EV_CASE_MULT_ID] = mult_fact * df[Constants.TARGET_EV_CASE_MULT_ID]
+	df[Constants.TARGET_EV_CASE_MULT_ID] = df[Constants.TARGET_EV_CASE_MULT_ID] + df[Constants.TARGET_EV_IDX]
 	return post_filtering(df)

@@ -1,5 +1,5 @@
 from pm4pygpu.constants import Constants
-import json
+import sys
 
 def get_first_df(df):
 	group_df_min = df.groupby(Constants.TARGET_CASE_IDX).agg({Constants.TARGET_EV_CASE_MULT_ID: "min"})
@@ -38,7 +38,7 @@ def filter_on_case_perf(df, min_perf=0, max_perf=1000000000):
 	cdf = cdf.query(Constants.CASE_DURATION + " >= "+str(min_perf)+" and "+Constants.CASE_DURATION + " <= "+str(max_perf))[Constants.TARGET_CASE_IDX]
 	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]
 
-def get_case_durations(df, n_values=5000):
+def get_case_durations(df, n_values=sys.maxsize):
 	cdf = build_cases_df(df)
 	serie = cdf[Constants.CASE_DURATION].sort_values()
 	lenn = len(serie)
@@ -49,7 +49,7 @@ def get_case_durations(df, n_values=5000):
 		ret[i] = float(ret[i])
 	return ret
 
-def get_intervals(df, n_values=5000):
+def get_intervals(df, n_values=500):
 	cdf = build_cases_df(df)
 	lenn = len(cdf)
 	if n_values < lenn:

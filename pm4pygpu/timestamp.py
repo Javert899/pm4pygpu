@@ -1,5 +1,7 @@
 from pm4pygpu.cases_df import build_cases_df
 from pm4pygpu.constants import Constants
+import sys
+
 
 def filter_events(df, min_timest=0, max_timest=100000000000, att=None):
 	if att is None:
@@ -38,7 +40,7 @@ def filter_cases_intersecting(df, min_timest=0, max_timest=100000000000, att=Non
 	cdf = cdf.query(query)[Constants.TARGET_CASE_IDX]
 	return df[df[Constants.TARGET_CASE_IDX].isin(cdf)]
 
-def timestamp_attribute_values(df, attribute=None, n_values=5000):
+def timestamp_attribute_values(df, attribute=None, n_values=sys.maxsize):
 	if attribute is not None:
 		df = df.copy()
 		df[Constants.TEMP_COLUMN_1] = df[attribute].astype("int") // 10**6

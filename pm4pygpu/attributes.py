@@ -1,4 +1,5 @@
 from pm4pygpu.constants import Constants
+import sys
 
 def get_attributes_list(df):
 	attributes = list(df.columns)
@@ -33,7 +34,7 @@ def numeric_attribute_filter_events(df, attribute, val_inf, val_sup):
 	filt_df = df.query(str(val_inf) + " <= " + attribute + " <= " + str(val_sup))
 	return filt_df
 
-def numeric_attribute_values(df, attribute, n_values=5000):
+def numeric_attribute_values(df, attribute, n_values=sys.maxsize):
 	serie = df[attribute].dropna().sort_values()
 	lenn = len(serie)
 	if n_values < lenn:
