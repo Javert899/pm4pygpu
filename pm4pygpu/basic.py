@@ -43,3 +43,12 @@ def get_xes(df):
 	list_eve = converter.apply(list_eve)
 	return serialize(list_eve)
 
+def calculate_fps(df):
+	from pm4pygpu import dfg, start_end_activities, attributes
+	dfgg = dfg.get_frequency_dfg(df)
+	start_activities = start_end_activities.get_start_activities(df)
+	end_activities = start_end_activities.get_end_activities(df)
+	activities = attributes.get_attribute_values(df)
+	parallel = {(x, y) for (x, y) in dfgg if (y, x) in dfgg}
+	sequence = {(x, y) for (x, y) in dfgg if not (y, x) in dfgg}
+	return {"dfg": dfgg, "start_activities": start_activities, "end_activities": end_activities, "activities": activities, "parallel": parallel, "sequence": sequence}

@@ -12,6 +12,9 @@ class Constants:
 	TARGET_PRE_CASE = "custom_column_pre_case"
 	TARGET_VARIANT_NUMBER = "custom_column_variant_number"
 	TIMESTAMP_DIFF = "custom_column_timestamp_diff"
+	TIMESTAMP_JOIN_DIFF = "custom_column_timestamp_join_diff"
+	TIMESTAMP_MIN_ALLOWED_COUPLE = "custom_column_timestamp_min_allowed_couple"
+	TIMESTAMP_MAX_ALLOWED_COUPLE = "custom_column_timestamp_max_allowed_couple"
 
 	VARIANTS_SEP = ","
 	CUSTOM_PREFIX = "custom_column"
