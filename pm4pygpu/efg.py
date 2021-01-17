@@ -8,9 +8,13 @@ def calculate_efg(df):
 	merged_df[Constants.TIMESTAMP_JOIN_DIFF + "_2"] = merged_df[Constants.TIMESTAMP_JOIN_DIFF]
 	return merged_df
 
-def calculate_temporal_profile(df, sigma=6):
+def calculate_temporal_profile(df):
 	merged_df = calculate_efg(df)
 	tf = merged_df.groupby([Constants.TARGET_ACTIVITY, Constants.TARGET_ACTIVITY + "_y"]).agg({Constants.TARGET_EV_IDX: "count", Constants.TIMESTAMP_JOIN_DIFF: "mean", Constants.TIMESTAMP_JOIN_DIFF + "_2": "mean"}).reset_index()
+	return merged_df, tf
+
+def conformance_temporal_profile(df, sigma=6):
+	merged_df, tf = calculate_temporal_profile(df)
 	tf[Constants.TIMESTAMP_JOIN_DIFF + "_2"] = sigma * tf[Constants.TIMESTAMP_JOIN_DIFF + "_2"]
 	tf[Constants.TIMESTAMP_MIN_ALLOWED_COUPLE] = tf[Constants.TIMESTAMP_JOIN_DIFF] - tf[Constants.TIMESTAMP_JOIN_DIFF + "_2"]
 	tf[Constants.TIMESTAMP_MAX_ALLOWED_COUPLE] = tf[Constants.TIMESTAMP_JOIN_DIFF] + tf[Constants.TIMESTAMP_JOIN_DIFF + "_2"]

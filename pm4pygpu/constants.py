@@ -5,6 +5,7 @@ class Constants:
 	TARGET_TIMESTAMP = "custom_column_timestamp"
 	TARGET_EV_IDX = "custom_column_event_idx"
 	TARGET_EV_CASE_MULT_ID = "custom_column_ev_case_mult_idx"
+	TARGET_EV_IN_CASE_IDX = "custom_column_ev_in_case_idx"
 	CASE_DURATION = "custom_column_case_duration"
 
 	TARGET_PRE_ACTIVITY = "custom_column_pre_activity_code"
